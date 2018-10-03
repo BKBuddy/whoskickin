@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_restful import Resource, Api
+from flask_caching import Cache
 
 from scrape import ScrapeKickoffData
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 api = Api(app)
 
 class AllKicks(Resource):
+    @cache.cached(30, key_prefix='all_kicks')
     def get(self):
         scrape = ScrapeKickoffData()
         eids = scrape.get_current_week_eids()
