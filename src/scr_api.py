@@ -6,7 +6,7 @@ from scrape import ScrapeKickoffData
 app = Flask(__name__)
 api = Api(app)
 
-class KickingIt(Resource):
+class AllKicks(Resource):
     def get(self):
         scrape = ScrapeKickoffData()
         eids = scrape.get_current_week_eids()
@@ -14,6 +14,15 @@ class KickingIt(Resource):
         return {
             'kicking_teams': kicking_teams,
             'receiving_teams': receiving_teams
+        }
+
+class SingleGameKick(Resource):
+    def get(self, eid):
+        scrape = ScrapeKickoffData()
+        kicking_team, receiving_team = scrape.get_single_game_kicking_data(eid)
+        return {
+            'kicking_team': kicking_team,
+            'receiving_team': receiving_team
         }
 
 class Schedule(Resource):
@@ -35,8 +44,9 @@ class Schedule(Resource):
         return schedule
 
 
-api.add_resource(KickingIt, '/')
+api.add_resource(AllKicks, '/')
 api.add_resource(Schedule, '/schedule')
+api.add_resource(SingleGameKick, '/<string:eid>')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
