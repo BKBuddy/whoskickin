@@ -1,13 +1,20 @@
 from datetime import date, datetime, timedelta
 import logging
+import os
 import schedule
 import time
+
+from twilio.rest import Client
 
 from scrape_service import ScrapeKickoffData
 
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
+
+account_sid = 'AC4489547a569bd20a6301e90d606fb3dd'
+auth_token = os.environ.get('TWILIO_TOKEN')
+twilio = Client(account_sid, auth_token)
 
 def send_are_you_ready_sms():
     is_game_today, games_this_week = _check_for_games_today()
@@ -16,7 +23,8 @@ def send_are_you_ready_sms():
     now = datetime.now()
     later = now + timedelta(hours=2)
     games_to_message = {eid:game for eid, game in games_this_week.items() if now < game['kickoff_datetime'] < later}
-    print(games_to_message)
+    message = twilio.messages.create(body=str(games_to_message), from_='+12169302380', to='+12168322276')
+    log.info('Message info is: {}'.format(message))
 
 def _check_for_games_today():
     scrape = ScrapeKickoffData()
