@@ -76,9 +76,14 @@ def main():
         """)
 
 class ScrapeKickoffData:
-    ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={type}&week={week}'
+    ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={season_type}&week={week}'
     CURRENT_WEEK_OF_GAMES = 'http://www.nfl.com/liveupdate/scorestrip/ss.xml'
     GAME_FEED = 'http://www.nfl.com/liveupdate/game-center/{eid}/{eid}_gtd.json'
+
+    headers = {
+        'User-Agent': 'Whoskickin User Agent 1.0',
+        'From': 'https://github.com/BKBuddy/whoskickin'
+    }
 
     def get_single_game_kicking_data(self, eid):
         """
@@ -92,7 +97,7 @@ class ScrapeKickoffData:
         single_game_data = None
         while not single_game_data and retry_counter < 2:
             try:
-                single_game_data = requests.get(self.GAME_FEED.format(eid=eid)).json()
+                single_game_data = requests.get(self.GAME_FEED.format(eid=eid), headers=self.headers).json()
             except requests.exceptions.Timeout as ex:
                 retry_counter += 1
                 log.error('Error encountered reaching {}: {}'.format(self.CURRENT_WEEK_OF_GAMES, ex))
@@ -117,6 +122,19 @@ class ScrapeKickoffData:
         :return: [strings of eid]
         """
         return [game.attrib['eid'] for game in self._get_games_data_for_current_week()]
+
+    def get_any_week_eids(self, season, season_type, week):
+        """
+        Retrieves a list of eids from nfl.com that enables you to get historical, live or future game data from
+        json feed per game.
+        :return:
+        :param season: YYYY, i.e, '2018'
+        :param season_type: 'PRE', 'REG', or 'POST'
+        :param week: 1-4 for PRE, 1-17 for REG, 18-20 & 21 for POST
+        :return: [strings of eid]
+        """
+        url = self.ANY_WEEK_OF_GAMES.format(season=season, season_type=season_type, week=week)
+        return [game.attrib['eid'] for game in self._get_games_data_for_current_week(url=url)]
 
     def get_current_week_game_data(self):
         """
@@ -150,15 +168,17 @@ class ScrapeKickoffData:
             'game_type': game.attrib['gt']
         } for game in games}
 
-    def _get_games_data_for_current_week(self):
+
+    def _get_games_data_for_current_week(self, url=None):
         retry_counter = 0
         games_this_week = None
+        url = url if url else self.CURRENT_WEEK_OF_GAMES
         while not games_this_week and retry_counter < 2:
             try:
-                games_this_week = requests.get(self.CURRENT_WEEK_OF_GAMES, timeout=3)
+                games_this_week = requests.get(url=url, timeout=3, headers=self.headers)
             except requests.exceptions.Timeout as ex:
                 retry_counter += 1
-                log.error('Error encountered reaching {}: {}'.format(self.CURRENT_WEEK_OF_GAMES, ex))
+                log.error('Error encountered reaching {}: {}'.format(url, ex))
         return ET.fromstring(games_this_week.text)[0]
 
     @staticmethod
