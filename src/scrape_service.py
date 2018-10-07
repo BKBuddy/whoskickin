@@ -114,6 +114,7 @@ class ScrapeKickoffData:
             return 'TBD', 'TBD'
 
         kicking_team = away_team if receiving_team == home_team else home_team
+        log.info('Data for EID: {}\tkicking: {}\treceiving: {}'.format(eid, kicking_team, receiving_team))
         return kicking_team, receiving_team
 
     def get_current_week_eids(self):

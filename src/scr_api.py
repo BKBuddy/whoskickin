@@ -46,7 +46,8 @@ class AllKicksForWeek(Resource):
         }
 
 class SingleGameKick(Resource):
-    def get(self, eid):
+    @staticmethod
+    def get(eid):
         kicking_team, receiving_team = scrape.get_single_game_kicking_data(eid)
         return {
             'kicking_team': kicking_team,
