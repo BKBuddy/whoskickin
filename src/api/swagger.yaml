@@ -1,0 +1,45 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is the api documentation for the world famous whoskickin project. You can download all of our hard work at our [github repo](https://github.com/BKBuddy/whoskickin) 
+  version: 1.0.0
+  title: Whoskickin
+  termsOfService: 'https://en.wikipedia.org/wiki/Uncle_Ben#%22With_great_power_comes_great_responsibility%22'
+  license:
+    name: MIT License
+    url: 'https://opensource.org/licenses/MIT'
+consumes:
+  - application/json
+produces:
+  - application/json
+basePath: /api
+schemes:
+  - http
+paths:
+  /all_kicks:
+    get:
+      tags:
+        - All Kicks
+      summary: Get kickoff And receiving Team pairs
+      description: 'This calls the single game feed for each game and builds a a json object containing arrays of kicking and receiving
+        teams. If a game has not started, the team abbr returned is "TBD".
+        May need to optimize by only looking up games that are currently being played or have played in the past or are currently being played.'
+      operationId: kick_service.get_all_kicks
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              kicking_teams:
+                type: array
+                items:
+                  type: string
+                  description: The kicking team's abbreviation
+              receiving_teams:
+                type: array
+                items:
+                  type: string
+                  description: The receiving team's abbreviation

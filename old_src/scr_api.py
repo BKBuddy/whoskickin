@@ -16,8 +16,9 @@ class AllKicks(Resource):
         """
         This calls the single game feed for each game and builds a dictionary containing lists of kicking and receiving
         teams. If a game has not started, the team abbr returned is "TBD".
-        May need to optimize by only looking up games that are currently being played or have played in the past.
-        being played.
+        May need to optimize by only looking up games that are currently being played or have played in the past or
+        are currently being played.
+
         :return: {
                     'kicking_teams': ["team_abbr", ...],
                     'receiving_teams': ["team_abbr", ...]
