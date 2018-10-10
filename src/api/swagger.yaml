@@ -43,3 +43,26 @@ paths:
                 items:
                   type: string
                   description: The receiving team's abbreviation
+
+  /single_game/{eid}:
+    get:
+      operationId: kick_service.get_single_game
+      tags:
+        - Single Game
+      summary: Retrieve one game's kicking and receiving team abbreviations
+      description: Retrieve one game's kicking and receiving team
+      parameters:
+        - name: eid
+          in: path
+          description: eid is the string identifier of a game
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully retrieved kicking data for game
+          schema:
+            properties:
+              kicking_team:
+                type: string
+              receiving_team:
+                type: string

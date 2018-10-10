@@ -209,6 +209,13 @@ def get_all_kicks():
         'receiving_teams': receiving_teams
     }
 
+def get_single_game(eid):
+    kicking_team, receiving_team = get_single_game_kicking_data(eid)
+    return {
+        'kicking_team': kicking_team,
+        'receiving_team': receiving_team
+    }
+
 
 if __name__ == '__main__':
     main()
