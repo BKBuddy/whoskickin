@@ -1,6 +1,6 @@
 FROM python:3.7
-WORKDIR /code
+WORKDIR /api
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-ADD . /code
-CMD ["python", "src/api/kickin_api.py"]
+ADD ./src/api /api
+CMD ["python", "./kickin_api.py"]
