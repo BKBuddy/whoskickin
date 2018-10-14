@@ -21,28 +21,18 @@ paths:
       tags:
         - All Kicks
       summary: Get kickoff And receiving Team pairs
-      description: 'This calls the single game feed for each game and builds a a json object containing arrays of kicking and receiving
-        teams. If a game has not started, the team abbr returned is "TBD".
-        May need to optimize by only looking up games that are currently being played or have played in the past or are currently being played.'
+      description: 'This calls the single game feed for each game and builds a dictionary that uses a games eid as the
+        key. The value is a list containing two dictionaries - one for each team. The team dictionary contains a str
+        of the team abbreviation, a boolean if the team is home, and a boolean if the team will kickoff in the second
+        half. is_kickoff will be None/null if the first half kick has not been posted to nfl.com yet.'
       operationId: kick_service.get_all_kicks
       produces:
         - application/json
       responses:
-        '200':
+        200:
           description: successful operation
           schema:
-            type: object
-            properties:
-              kicking_teams:
-                type: array
-                items:
-                  type: string
-                  description: The kicking team's abbreviation
-              receiving_teams:
-                type: array
-                items:
-                  type: string
-                  description: The receiving team's abbreviation
+            $ref: '#/definitions/MultipleGames'
 
   /single_game/{eid}:
     get:
@@ -61,8 +51,54 @@ paths:
         200:
           description: Successfully retrieved kicking data for game
           schema:
-            properties:
-              kicking_team:
-                type: string
-              receiving_team:
-                type: string
+            $ref: '#/definitions/SingleGame'
+
+definitions:
+  MultipleGames:
+    type: object
+    properties:
+      eid:
+        type: array
+        items:
+          $ref: '#/definitions/Team'
+    example:
+      2018101100:
+        - team_abbr: NYG
+          is_kicking: true
+          is_home: true
+        - team_abbr: PHI
+          is_kicking: false
+          is_home: false
+      2018101401:
+        - team_abbr: CLE
+          is_kicking: 'null'
+          is_home: true
+        - team_abbr: LAC
+          is_kicking: 'null'
+          is_home: false
+
+  SingleGame:
+    type: object
+    properties:
+      eid:
+        type: array
+        items:
+          $ref: '#/definitions/Team'
+    example:
+      2018101100:
+        - team_abbr: NYG
+          is_kicking: true
+          is_home: true
+        - team_abbr: PHI
+          is_kicking: false
+          is_home: false
+
+  Team:
+    type: object
+    properties:
+      team_abbr:
+        type: string
+      is_home:
+        type: boolean
+      is_kicking:
+        type: boolean

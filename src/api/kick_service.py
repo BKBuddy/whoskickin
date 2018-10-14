@@ -87,35 +87,59 @@ headers = {
 
 def get_single_game_kicking_data(eid):
     """
-    Takes an eid and returns a tuple containing the kicking team and receiving team abbreviations. It returns a
-    tuple of ('TBD', 'TBD') if a json error or key error is thrown as that means that there is no game data  or
-    kickoff data yet.
+    Takes an eid and returns a dictionary with the team abbr, is_home, is_kicking. is_kicking will be None if the game
+    has not started, True if the team will kick in the second half and False if the team will receive in the first half.
     :param eid:
-    :return: (kicking_team_abbr, receiving_team_abbr)
+    :return: {
+                eid : [
+                        {team_abbr (str),
+                        is_home (bool),
+                        is_kicking (bool)},
+
+                        {team_abbr (str),
+                        is_home (bool),
+                        is_kicking (bool)}
+                    ]
+                }
     """
     retry_counter = 0
-    single_game_data = None
-    while not single_game_data and retry_counter < 2:
+    schedule = get_current_week_game_data()
+    single_game_data = {
+        eid: [
+            {'team_abbr': schedule[eid]['home_team_abbr'],
+             'is_home': True,
+             'is_kicking': None},
+
+            {'team_abbr': schedule[eid]['visitor_team_abbr'],
+             'is_home': False,
+             'is_kicking': None}
+        ]
+    }
+    nfl_live_data = None
+    while not nfl_live_data and retry_counter < 2:
         try:
-            single_game_data = requests.get(GAME_FEED.format(eid=eid), headers=headers).json()
+            nfl_live_data = requests.get(GAME_FEED.format(eid=eid), headers=headers).json()
         except requests.exceptions.Timeout as ex:
             retry_counter += 1
             log.error('Error encountered reaching {}: {}'.format(CURRENT_WEEK_OF_GAMES, ex))
         except json.decoder.JSONDecodeError:
             log.error('Game Data not available yet for {}.'.format(eid))
-            return 'TBD', 'TBD'
+            return single_game_data
 
     try:
-        home_team = single_game_data[eid]['home']['abbr']
-        away_team = single_game_data[eid]['away']['abbr']
-        receiving_team = single_game_data[eid]['drives']['1']['posteam']
+        kicking_team = nfl_live_data[eid]['drives']['1']['posteam']
     except KeyError:
         log.error('Kickoff data not available yet for {}.'.format(eid))
-        return 'TBD', 'TBD'
+        return single_game_data
 
-    kicking_team = away_team if receiving_team == home_team else home_team
-    log.info('Data for EID: {}\tkicking: {}\treceiving: {}'.format(eid, kicking_team, receiving_team))
-    return kicking_team, receiving_team
+    if kicking_team == single_game_data[eid][0]['team_abbr']:
+        single_game_data[eid][0]['is_kicking'] = True
+        single_game_data[eid][1]['is_kicking'] = False
+    else:
+        single_game_data[eid][0]['is_kicking'] = False
+        single_game_data[eid][1]['is_kicking'] = True
+    log.info('Data for EID: {} is: {}'.format(eid, single_game_data))
+    return single_game_data
 
 def get_current_week_eids():
     """
@@ -192,29 +216,30 @@ def _get_kickoff_datetime(eid, time):
 
 def get_all_kicks():
     """
-    This calls the single game feed for each game and builds a dictionary containing lists of kicking and receiving
-    teams. If a game has not started, the team abbr returned is "TBD".
-    May need to optimize by only looking up games that are currently being played or have played in the past or
-    are currently being played.
+    This calls the single game feed for each game and builds a dictionary that uses a game's eid as the key. The value
+    is a list containing two dictionaries - one for each team. The team dictionary contains a str of the team
+    abbreviation, a boolean if the team is home, and a boolean if the team will kickoff in the second half. is_kickoff
+    will be None/null if the first half kick has not been posted to nfl.com yet.
 
     :return: {
-                'kicking_teams': ["team_abbr", ...],
-                'receiving_teams': ["team_abbr", ...]
+                eid : [
+                        {team_abbr (str),
+                        is_home (bool),
+                        is_kicking (bool)},
+
+                        {team_abbr (str),
+                        is_home (bool),
+                        is_kicking (bool)}
+                    ],
+                eid: [{}, {}], ...
+
             }
     """
     eids = get_current_week_eids()
-    kicking_teams, receiving_teams = zip(*[get_single_game_kicking_data(eid) for eid in eids])
-    return {
-        'kicking_teams': kicking_teams,
-        'receiving_teams': receiving_teams
-    }
+    return {eid: get_single_game_kicking_data(eid)[eid] for eid in eids}
 
 def get_single_game(eid):
-    kicking_team, receiving_team = get_single_game_kicking_data(eid)
-    return {
-        'kicking_team': kicking_team,
-        'receiving_team': receiving_team
-    }
+    return get_single_game_kicking_data(eid)
 
 
 if __name__ == '__main__':
