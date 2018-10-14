@@ -25,7 +25,7 @@ paths:
         key. The value is a list containing two dictionaries - one for each team. The team dictionary contains a str
         of the team abbreviation, a boolean if the team is home, and a boolean if the team will kickoff in the second
         half. is_kickoff will be None/null if the first half kick has not been posted to nfl.com yet.'
-      operationId: kick_service.get_all_kicks
+      operationId: controllers.kick_controller.get_all_kicks
       produces:
         - application/json
       responses:
@@ -36,11 +36,13 @@ paths:
 
   /single_game/{eid}:
     get:
-      operationId: kick_service.get_single_game
+      operationId: controllers.kick_controller.get_single_game
       tags:
         - Single Game
       summary: Retrieve one game's kicking and receiving team abbreviations
       description: Retrieve one game's kicking and receiving team
+      produces:
+        - application/json
       parameters:
         - name: eid
           in: path
@@ -52,6 +54,21 @@ paths:
           description: Successfully retrieved kicking data for game
           schema:
             $ref: '#/definitions/SingleGame'
+
+  /schedule:
+    get:
+      tags:
+        - Current Schedule
+      summary: Get the schedule for the current week.
+      description: Retrieves metadata about this week's games and returns an object of objects for each game.
+      operationId: controllers.schedule_controller.get_current_week_schedule
+      produces:
+        - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Schedule'
 
 definitions:
   MultipleGames:
@@ -102,3 +119,30 @@ definitions:
         type: boolean
       is_kicking:
         type: boolean
+
+  Schedule:
+    type: object
+    properties:
+      eid:
+        type: object
+        properties:
+          day:
+            type: string
+          kickoff_datetime:
+            type: string
+          game_status:
+            type: string
+          home_team_abbr:
+            type: string
+          home_team_name:
+            type: string
+          home_score:
+            type: string
+          visitor_team_abbr:
+            type: string
+          visitor_team_name:
+            type: string
+          visitor_score:
+            type: string
+          game_type:
+            type: string
