@@ -75,50 +75,37 @@ definitions:
     type: object
     properties:
       eid:
-        type: array
-        items:
-          $ref: '#/definitions/Team'
+        $ref: '#/definitions/Team'
     example:
       2018101100:
-        - team_abbr: NYG
-          is_kicking: true
-          is_home: true
-        - team_abbr: PHI
-          is_kicking: false
-          is_home: false
+        home_team: CLE
+        away_team: LAC
+        kicking_team: CLE
       2018101401:
-        - team_abbr: CLE
-          is_kicking: 'null'
-          is_home: true
-        - team_abbr: LAC
-          is_kicking: 'null'
-          is_home: false
+        home_team: TB
+        away_team: ATL
+        kicking_team: 'null'
 
   SingleGame:
     type: object
     properties:
       eid:
-        type: array
-        items:
-          $ref: '#/definitions/Team'
+        $ref: '#/definitions/Team'
     example:
       2018101100:
-        - team_abbr: NYG
-          is_kicking: true
-          is_home: true
-        - team_abbr: PHI
-          is_kicking: false
-          is_home: false
+        home_team: CLE
+        away_team: LAC
+        kicking_team: CLE
 
   Team:
     type: object
     properties:
-      team_abbr:
+      home_team:
         type: string
-      is_home:
-        type: boolean
-      is_kicking:
-        type: boolean
+      away_team:
+        type: string
+      kicking_team:
+        type: string
 
   Schedule:
     type: object

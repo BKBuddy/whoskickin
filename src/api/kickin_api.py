@@ -1,8 +1,13 @@
 from flask import redirect
 import connexion
 
+from services.sms_service import main as sms_service
+
 # Create the application instance
 app = connexion.App(__name__, specification_dir='.')
+
+# Start up message service
+#sms_service()
 
 # Read the swagger.yml file to configure the endpoints
 app.add_api('swagger.yaml')

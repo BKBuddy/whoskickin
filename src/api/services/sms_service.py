@@ -6,9 +6,8 @@ import time
 
 from twilio.rest import Client
 
-from scr_api import SingleGameKick
-from scrape_service import ScrapeKickoffData
-
+from controllers.kick_controller import get_single_game
+from controllers.schedule_controller import get_current_week_schedule
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -24,6 +23,8 @@ def send_sms_message():
     if not is_game_today:
         return
     message_body = _get_kickoff_message(games_this_week)
+    log.info('Message is: {}'.format(message_body))
+    return
     for recipient_phone_number in recipient_phone_numbers:
         message = twilio.messages.create(
             body=message_body,
@@ -33,29 +34,32 @@ def send_sms_message():
 
 def _get_kickoff_message(games_this_week):
     now = datetime.now()
-    earlier = now - timedelta(hours=2)
+    earlier = now - timedelta(hours=36)
     eids = []
     kickoff_times = []
     for eid, game in games_this_week.items():
         if earlier < game['kickoff_datetime'] < now:
             eids.append(eid)
             kickoff_times.append(game['kickoff_datetime'].strftime('%I:%M %p'))
-    kicking_teams = {idx: SingleGameKick().get(eid=eid) for idx, eid in enumerate(eids)}
+    all_kicking_teams = {idx: get_single_game(eid=eid) for idx, eid in enumerate(eids)}
+    log.info('kicking_teams is: {}'.format(all_kicking_teams))
 
     message_body = '-\n\n'
     for idx, kickoff_time in enumerate(kickoff_times):
-        if kicking_teams[idx]['kicking_team'] != 'TBD':
-            message_body = '{}Game Time: {}\nKicking: {}\nReceiving: {}\n\n'.format(
+        single_game_kicking = all_kicking_teams[idx].values()
+        list(single_game_kicking)[0]
+        import ipdb; ipdb.set_trace()
+        if single_game_kicking[0]['is_kicking'] is not None:
+            message_body = '{}Game Time: {}\n2nd half:\nKicking: {}\nReceiving: {}\n\n'.format(
                 message_body,
                 kickoff_time,
-                kicking_teams[idx]['kicking_team'],
-                kicking_teams[idx]['receiving_team'])
+                single_game_kicking[0]['team_abbr'] if single_game_kicking[0]['is_kicking'] else single_game_kicking[1]['team_abbr'],
+                single_game_kicking[1]['team_abbr'] if single_game_kicking[0]['is_kicking'] else single_game_kicking[0]['team_abbr'])
     log.info('Message body: {}'.format(message_body))
     return message_body
 
 def _check_for_games_today():
-    scrape = ScrapeKickoffData()
-    games_this_week = scrape.get_current_week_game_data()
+    games_this_week = get_current_week_schedule()
     game_dates = _get_game_dates(games_this_week)
     is_game_today = any(game_date == date.today() for game_date in game_dates)
     log.info('Is there a game today? Schedule says: {}'.format(is_game_today))
@@ -75,9 +79,12 @@ schedule.every().saturday.at('13:15').do(send_sms_message)
 schedule.every().saturday.at('16:40').do(send_sms_message)
 
 # testing scheduler - Line below should always be commented out in production
-# schedule.every(15).seconds.do(send_sms_message)
+schedule.every(5).seconds.do(send_sms_message)
 
-if __name__ == '__main__':
+def main():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+if __name__ == '__main__':
+    main()
