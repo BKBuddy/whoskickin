@@ -23,8 +23,7 @@ def send_sms_message():
     if not is_game_today:
         return
     message_body = _get_kickoff_message(games_this_week)
-    log.info('Message is: {}'.format(message_body))
-    return
+
     for recipient_phone_number in recipient_phone_numbers:
         message = twilio.messages.create(
             body=message_body,
@@ -34,28 +33,29 @@ def send_sms_message():
 
 def _get_kickoff_message(games_this_week):
     now = datetime.now()
-    earlier = now - timedelta(hours=36)
+    earlier = now - timedelta(hours=2)
     eids = []
     kickoff_times = []
     for eid, game in games_this_week.items():
         if earlier < game['kickoff_datetime'] < now:
             eids.append(eid)
             kickoff_times.append(game['kickoff_datetime'].strftime('%I:%M %p'))
-    all_kicking_teams = {idx: get_single_game(eid=eid) for idx, eid in enumerate(eids)}
-    log.info('kicking_teams is: {}'.format(all_kicking_teams))
+    all_kicking_teams = [get_single_game(eid)[eid] for eid in eids]
 
     message_body = '-\n\n'
     for idx, kickoff_time in enumerate(kickoff_times):
-        single_game_kicking = all_kicking_teams[idx].values()
-        list(single_game_kicking)[0]
-        import ipdb; ipdb.set_trace()
-        if single_game_kicking[0]['is_kicking'] is not None:
+            if all_kicking_teams[idx]['kicking_team']:
+                receive_team = all_kicking_teams[idx]['home_team'] if all_kicking_teams[idx]['kicking_team'] == \
+                                                                      all_kicking_teams[idx]['away_team'] \
+                                                                    else all_kicking_teams[idx]['away_team']
+            else:
+                receive_team = None
             message_body = '{}Game Time: {}\n2nd half:\nKicking: {}\nReceiving: {}\n\n'.format(
                 message_body,
                 kickoff_time,
-                single_game_kicking[0]['team_abbr'] if single_game_kicking[0]['is_kicking'] else single_game_kicking[1]['team_abbr'],
-                single_game_kicking[1]['team_abbr'] if single_game_kicking[0]['is_kicking'] else single_game_kicking[0]['team_abbr'])
-    log.info('Message body: {}'.format(message_body))
+                all_kicking_teams[idx]['kicking_team'],
+                receive_team
+            )
     return message_body
 
 def _check_for_games_today():
