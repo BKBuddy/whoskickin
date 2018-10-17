@@ -1,7 +1,5 @@
-from flask import redirect
 import connexion
-
-from services.sms_service import main as sms_service
+from flask import redirect
 
 # Create the application instance
 app = connexion.App(__name__, specification_dir='.')

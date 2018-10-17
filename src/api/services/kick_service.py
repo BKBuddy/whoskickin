@@ -8,73 +8,6 @@ import json
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-def main():
-    scraper = ScrapeKickoffData()
-    eids = scraper.get_current_week_eids()
-    kicking_and_receiving_teams = [scraper.get_single_game_kicking_data(eid) for eid in eids]
-    print("""
-## ----------------------------------------------------------------------------------------------##
-##                                                                                               ##
-##                                ARE YOU READY FOR SOME FOOTBALL!!!                             ##
-##                                                                                               ##
-## ----------------------------------------------------------------------------------------------## 
-                                                ▗
-                                               ▟▜▄
-                                             ▄▛█▜▛▙▖
-                            ▖             ▗▄█▙█▜▛█▜█▙▄              ▗
-                            ▛█▄▖▖    ▗▗▄▞█▜▙▙█▟▛▛▀▀▝▀▛██▄▄▖▖   ▖▖▄▄█▜
-                            ▛▙▛█▜██▜█▛█▟▜▛█▟▜▞▘   ▚▘ ▐█▟▜▟▜████▜▜▜▟▜▙
-                            █▜▜▚ ▙▜▛▙▛▙ ▛▛▙█▘  ▄▝▀   ▗▙▜▜ █▞▙█▟▜ ▛▛█▟
-                            ▜▛▙  ▗▟▜█▟  ▗▟▜▞  ▚▄▀     █▚  ▗▟▜▟▄▖ ▗▟▙▙
-                            ▛█▜▄▛▄▜█▟▟▄▛▄▜█  ▜▚      ▐▛█▄▙▄▜▛▛█▗▛▄▟▟▙
-                            █▜▜▟▜▜█▟▙█▟▜▜▜▟  ▌      ▗▛█▙▛▜▟▛█▜▛█▀█▟▙▙
-                            ▛▛▀▘ ▀▐▙▛▞▀ ▀▀█ ▞      ▄▛█▙▀▀ ▀▀▛█▀▘▘▘▀▟▙
-                            █▜█  ▐▙▙█▜   █▙▘▌   ▗▄▛▙█▙▛█  ▗█▜▙█▖  ██▟
-                            ▛█▙▜█▚▟▜▟█▟█▙█▟█▄▟▟▛█▙█▛▙▛▛▙▟█▚▛█▙▛▟▜▙█▟▟
-                            ▛▙▀▀▝▀▀▀▘▀▝▝▝▝▘▀▀▝▘▀▘▀▝▀▘▀▀▀▘▀▀▀▘▘▀▀▀▝▝▙▙
-                            █▌  ▖▖▖▖▖  ▄▄▖▄▗ ▖▖▖▖▖▖▖▖▖▖ ▖▖▖▖▖      ▙▛
-                            ▙▙  ▙▜▜▟▄ ▝▟▐▞▙▜ ▞▛▜▞▛▟▜▞▛▖▐▜▚▛▟▜      ▟▜
-                            █▄   ▚▙▚▚▖ ▝▚▜▞▖ ▝▐▙▜▞▝▝▞▛▌ ▚▜▟▞       ▜▛
-                            ▙▌   ▐▞▛▙▚  ▛▙▜   ▚▙▚▘  ▝▘▘ ▝▙▚▜       ▜▟
-                            ▛▙   ▐▞▟▞▛▖ ▛▞▙   ▐▞▛▌      ▐▞▙▙       ▜▙
-                            █▌   ▐▞▙▜▞▙ ▛▟▞   ▚▜▞▄▗▞▛▖  ▗▜▞▞       ▜▟
-                            ▙▌   ▐▟▞▌▛▟▖▛▟▟   ▐▚▜▞▙▜▟▖  ▝▙▜▞       ▜▙
-                            ▛▌   ▐▄▚▘▞▙▚▛▟▐   ▞▛▙▘ ▘▌▖  ▐▞▙▜       ▜▟
-                            █▛   ▗▙▜▘▝▞▙▜▞▙   ▐▚▙▘      ▗▜▞▌  ▐▜▚  ▜▙
-                            ▙▌   ▐▞▙▘ ▐▞▙▜▞   ▐▌▙▘      ▝▙▜▞  ▐▚▛  ▜▟
-                            █▌  ▙▙▜▐▚  ▛▞▙▜   ▐▞▙▘      ▐▞▙▜▞▛▙▜▞  ▜▙
-                            ▙█  ▝▝▞▛▟▘ ▝▛▟▞   ▐▜▞▌     ▗▟▞▞▙▚▛▞▘▘  █▟
-                            ▝▟█▖        ▀▞▟  ▞▛▟▞▖     ▝▖▀▀      ▗▟▜▞
-                              ▚██▙▄▖▖        ▀▐▚▜▜▖          ▗▗▄▜█▞▘
-                                 ▘▀▀██▛▙▙▄▖▖     ▘▘   ▗▄▄▟▞█▜▛▛▀▘
-                                       ▘▀▘▛▛▙▄     ▄▟█▜▞▀▝▘▘
-                                            ▀▀█▄ ▟▜▛▘▘
-                                              ▝▜▜▛▘
-                                                ▘
-
-##           _________________                                        ___________________
-##          |  KICKING TEAMS  |                                      |  RECEIVING TEAMS  |
-##          |_________________|                                      |___________________|
-    """, end='', flush=True)
-    for kicking, receiving in kicking_and_receiving_teams:
-        if kicking != 'TBD':
-            print("""
-##          |   {kicking}\t     |                                       |   {receiving}\t\t|
-            """.format(kicking=kicking, receiving=receiving), end='', flush=True)
-    if any(team == ('TBD', 'TBD') for team in kicking_and_receiving_teams):
-        print("""
-## ----------------------------------------------------------------------------------------------##
-##                              Keep Klicking for more Kicking info!                             ##
-## ----------------------------------------------------------------------------------------------##
-              """)
-    print("""
-## ----------------------------------------------------------------------------------------------##
-##                                     Brought to you by:                                        ##
-##                                KICKING IT WITH KURRBERT!!!                                    ##
-##                                                                                               ##
-## ----------------------------------------------------------------------------------------------##
-        """)
-
 
 ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={season_type}&week={week}'
 CURRENT_WEEK_OF_GAMES = 'http://www.nfl.com/liveupdate/scorestrip/ss.xml'
@@ -109,16 +42,8 @@ def get_single_game_kicking_data(eid):
             'kicking_team': None
         }
     }
-    nfl_live_data = None
-    while not nfl_live_data and retry_counter < 2:
-        try:
-            nfl_live_data = requests.get(GAME_FEED.format(eid=eid), headers=headers).json()
-        except requests.exceptions.Timeout as ex:
-            retry_counter += 1
-            log.error('Error encountered reaching {}: {}'.format(CURRENT_WEEK_OF_GAMES, ex))
-        except json.decoder.JSONDecodeError:
-            log.error('Game Data not available yet for {}.'.format(eid))
-            return single_game_data
+    ## TODO finish refactor of nfl api call, handle 404, other stuff...###
+    nfl_live_data = _get_data_from_nfl(GAME_FEED, eid=eid)
 
     try:
         kicking_team = nfl_live_data[eid]['drives']['1']['posteam']
@@ -202,33 +127,22 @@ def _get_kickoff_datetime(eid, time):
     game_time = '{} {}:{}PM'.format(eid[:8], hour, minute)
     return datetime.strptime(game_time, '%Y%m%d %I:%M%p')
 
-def get_all_kicks():
-    """
-    This calls the single game feed for all games this week and builds a dictionary of dictionaries that uses a game's
-    eid as the key. The game dictionary contains home team abbreviation, away team and the team that will kickoff in the
-    second half. If the kickoff has yet to occur the kicking team is None.
+def _get_data_from_nfl(url, eid=None):
+    retry_counter = 0
+    api_data = None
 
-    :return: {
-                "eid" :
-                        {
-                            "home_team": str
-                            "away_team": str
-                            "kicking_team": str / None
-                        },
-                "eid" :
-                        {
-                            "home_team": str
-                            "away_team": str
-                            "kicking_team": str / None
-                        }...
-                }
-    """
-    eids = get_current_week_eids()
-    return {eid: get_single_game_kicking_data(eid)[eid] for eid in eids}
+    if eid:
+        url = url.format(eid=eid)
 
-def get_single_game(eid):
-    return get_single_game_kicking_data(eid)
+    while not api_data and retry_counter < 3:
+        try:
+            api_data = requests.get(url.format(eid=eid), headers=headers).json()
+        except requests.exceptions.Timeout as ex:
+            retry_counter += 1
+            log.error('Error reaching: {}\n{}'.format(url, ex))
+        except json.decoder.JSONDecodeError:
+            log.error('No data returned from url: {}'.format(url))
+            return api_data
+    return api_data
 
 
-if __name__ == '__main__':
-    main()
