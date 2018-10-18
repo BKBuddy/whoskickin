@@ -24,5 +24,6 @@ services:
       - RECIPIENT_PHONE_NUMBERS=+12168322276
       - TWILIO_SID=${TWILIO_SID}
       - TWILIO_TOKEN=${TWILIO_TOKEN}
+      - TEST_MODE=${not_testing}
     volumes:
       - ./src/messaging:/root

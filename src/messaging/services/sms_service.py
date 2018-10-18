@@ -20,6 +20,7 @@ def send_sms_message():
     if message_body is None:
         log.debug('Message body returned None, not sending sms')
         return
+    message_body = '{}{}'.format(message_body, '-\n\n')
     for recipient_phone_number in RECIPIENT_PHONE_NUMBERS:
         message = twilio.messages.create(
             body=message_body,
@@ -28,6 +29,7 @@ def send_sms_message():
         log.info('Message info is: {}'.format(message))
 
 def _get_kickoff_message(games_this_week):
+    message_body = None
     now = datetime.now()
     earlier = now - timedelta(hours=2)
     eids = []
@@ -39,7 +41,6 @@ def _get_kickoff_message(games_this_week):
     all_kicking_teams = [_get_data_from_api(endpoint='single_game', eid=eid) for eid in eids]
     if any(team is None for team in all_kicking_teams):
         return None
-    message_body = '-\n\n'
     for idx, kickoff_time in enumerate(kickoff_times):
             if all_kicking_teams[idx]['kicking_team']:
                 receive_team = all_kicking_teams[idx]['home_team'] if all_kicking_teams[idx]['kicking_team'] == \
