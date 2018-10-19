@@ -1,12 +1,60 @@
 import xml.etree.ElementTree as ET
-import logging
 from datetime import datetime
-
-import requests
 import json
+import logging
+
+from chalice import Chalice
+import requests
+
+app = Chalice(app_name='kickingLambda')
+app.debug = True
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
+
+@app.route('/all_kicks')
+def all_kicks():
+    """
+    This calls the single game feed for all games this week and builds a dictionary of dictionaries that uses a game's
+    eid as the key. The game dictionary contains home team abbreviation, away team and the team that will kickoff in the
+    second half. If the kickoff has yet to occur the kicking team is None.
+
+    :return: {
+                "eid" :
+                        {
+                            "home_team": str
+                            "away_team": str
+                            "kicking_team": str / None
+                        },
+                "eid" :
+                        {
+                            "home_team": str
+                            "away_team": str
+                            "kicking_team": str / None
+                        }...
+                }
+        """
+    eids = get_current_week_eids()
+    return {eid: get_single_game_kicking_data(eid)[eid] for eid in eids}
+
+@app.route('/single_game/{eid}')
+def single_game(eid):
+    """
+    This calls the single game feed for the eid provided and builds a dictionary that uses a game's eid as the key. The
+    game dictionary contains home team abbreviation, away team and the team that will kickoff in the second half. If the
+    kickoff has yet to occur the kicking team is None.
+    :param eid: str
+
+    :return: {
+                "eid" :
+                        {
+                            "home_team": str
+                            "away_team": str
+                            "kicking_team": str / None
+                        }
+                }
+    """
+    return get_single_game_kicking_data(eid)
 
 
 ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={season_type}&week={week}'
@@ -145,5 +193,3 @@ def _get_data_from_nfl(url, eid=None):
             log.error('No data returned from url: {}'.format(url))
             return api_data
     return api_data
-
-
