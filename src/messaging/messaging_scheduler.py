@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 # Create schedule for sending kickoff sms messages
-schedule.every().thursday.at('21:00').do(send_sms_message)
+schedule.every().thursday.at('20:40').do(send_sms_message)
 schedule.every().sunday.at('13:15').do(send_sms_message)
 schedule.every().sunday.at('16:40').do(send_sms_message)
 schedule.every().sunday.at('20:35').do(send_sms_message)

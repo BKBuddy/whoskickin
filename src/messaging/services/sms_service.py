@@ -20,7 +20,7 @@ def send_sms_message():
     if message_body is None:
         log.debug('Message body returned None, not sending sms')
         return
-    message_body = '{}{}'.format(message_body, '-\n\n')
+    message_body = '{}{}'.format('-\n\n', message_body)
     for recipient_phone_number in RECIPIENT_PHONE_NUMBERS:
         message = twilio.messages.create(
             body=message_body,
@@ -42,16 +42,17 @@ def _get_kickoff_message(games_this_week):
     if any(team is None for team in all_kicking_teams):
         return None
     for idx, kickoff_time in enumerate(kickoff_times):
-            if all_kicking_teams[idx]['kicking_team']:
-                receive_team = all_kicking_teams[idx]['home_team'] if all_kicking_teams[idx]['kicking_team'] == \
-                                                                      all_kicking_teams[idx]['away_team'] \
-                                                                    else all_kicking_teams[idx]['away_team']
+            log.debug('kicking team dictionary / list is of type: {} and is: {}'.format(type(all_kicking_teams), all_kicking_teams))
+            if [game['kicking_team'] for game in all_kicking_teams[idx].values()][0]:
+                game = list(all_kicking_teams[idx].values())[0]
+                receive_team = game['home_team'] if game['kicking_team'] == game['away_team'] else game['away_team']
+                kicking_team = game['kicking_team']
             else:
                 receive_team = None
-            message_body = '{}Game Time: {}\n2nd half:\nKicking: {}\nReceiving: {}\n\n'.format(
-                message_body,
+                kicking_team = None
+            message_body = 'Game Time: {}\n2nd half:\nKicking: {}\nReceiving: {}\n\n'.format(
                 kickoff_time,
-                all_kicking_teams[idx]['kicking_team'],
+                kicking_team,
                 receive_team
             )
     return message_body
