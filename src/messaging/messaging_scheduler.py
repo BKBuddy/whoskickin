@@ -3,7 +3,7 @@ import time
 
 import schedule
 
-from services.config_service import TEST_MODE
+from messagingLambda.chalicelib.config_service import TEST_MODE
 from services.sms_service import send_sms_message
 
 logging.basicConfig(level=logging.DEBUG)

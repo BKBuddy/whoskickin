@@ -1,12 +1,13 @@
 import json
 import logging
 from datetime import date, datetime, timedelta
+from dateutil import tz
 
 import requests
 from chalice import Chalice, Cron
 from twilio.rest import Client
 
-from messagingLambda.chalicelib.config_service import ACCOUNT_SID, AUTH_TOKEN, BASE_API_URL, RECIPIENT_PHONE_NUMBERS, \
+from chalicelib.config_service import ACCOUNT_SID, AUTH_TOKEN, BASE_API_URL, RECIPIENT_PHONE_NUMBERS, \
     TWILIO_PHONE
 
 logging.basicConfig(level=logging.DEBUG)
@@ -15,10 +16,11 @@ log = logging.getLogger(__name__)
 twilio = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 app = Chalice(app_name="helloworld")
+app.debug = True
 
-# Automatically runs every 5 minutes
-@app.schedule(Cron(40, 20, '*', '*', 'THU'))
-def periodic_task(event):
+# Automatically runs every Thursday at 7:40 or 8:40 Eastern (UTC for AWS)
+@app.schedule(Cron('45', '0,1,17,18,20,21', '?', '*', 'THU,SAT-MON', '*'))
+def thursday_night_game(event):
     send_sms_message()
 
 def send_sms_message():
@@ -37,9 +39,15 @@ def send_sms_message():
             to=recipient_phone_number)
         log.info('Message info is: {}'.format(message))
 
+def _fix_utc_time(now):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('America/New_York')
+    now.replace(tzinfo=from_zone)
+    return now.astimezone(to_zone)
+
 def _get_kickoff_message(games_this_week):
     message_body = None
-    now = datetime.now()
+    now = _fix_utc_time(datetime.now())
     earlier = now - timedelta(hours=2)
     eids = []
     kickoff_times = []
@@ -71,7 +79,9 @@ def _check_for_games_today():
     games_this_week = _get_data_from_api(endpoint='schedule')
     if games_this_week:
         game_dates = _get_game_dates(games_this_week)
-        is_game_today = any(game_date == date.today() for game_date in game_dates)
+        now = _fix_utc_time(datetime.now())
+        today = now.date()
+        is_game_today = any(game_date == today for game_date in game_dates)
         log.info('Is there a game today? Schedule says: {}'.format(is_game_today))
     return is_game_today, games_this_week
 

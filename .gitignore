@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+config.json
+.chalice/
 .chalice/deployments/
 .chalice/venv/
 secrets.env

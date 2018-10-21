@@ -3,4 +3,4 @@ WORKDIR /root
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 ADD . /root
-CMD ["python", "./kickin_api.py"]
+CMD ["chalice local --port 5000"]

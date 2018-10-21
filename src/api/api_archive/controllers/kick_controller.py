@@ -1,6 +1,6 @@
 import logging
 
-from services.kick_service import get_current_week_eids, get_single_game_kicking_data
+from api_archive.services.kick_service import get_current_week_eids, get_single_game_kicking_data
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
