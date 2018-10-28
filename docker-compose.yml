@@ -16,8 +16,6 @@ services:
 
   messaging:
     build: ./src/messaging
-    env_file:
-      - src/messaging/secrets.env
     environment:
       - TWILIO_PHONE=+12169302380
       - API_URL=http://whoskickin_api_1:5000/api
