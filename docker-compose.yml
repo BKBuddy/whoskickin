@@ -1,28 +1,29 @@
 version: '3'
 services:
-#  api:
-#    build: ./src/api/kickingLambda
-#    ports:
-#     - "5000:5000"
-#    volumes:
-#     - ./src/api/kickingLambda:/root
-#
-#  static:
-#    build: ./src/static
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - ./src/static:/root
-  messaging:
-    build: ./src/messaging
-    env_file:
-      - src/messaging/secrets.env
-    environment:
-      - TWILIO_PHONE=+12169302380
-      - API_URL=http://127.0.0.1:5000
-      - RECIPIENT_PHONE_NUMBERS=+12168322276
-      - TWILIO_SID=${TWILIO_SID}
-      - TWILIO_TOKEN=${TWILIO_TOKEN}
-      - TEST_MODE=True
+  api:
+    build: ./src/api
+    ports:
+     - "5000:5000"
     volumes:
-      - ./src/messaging:/root
+     - ./src/api:/root
+
+  static:
+    build: ./src/static
+    ports:
+    - "3000:3000"
+    volumes:
+    - ./src/static:/root
+
+#  messaging:
+#    build: ./src/messaging/messagingLambda
+#    env_file:
+#      - src/messaging/messagingLambda/secrets.env
+#    environment:
+#      - TWILIO_PHONE=+12169302380
+#      - API_URL=http://127.0.0.1:5000
+#      - RECIPIENT_PHONE_NUMBERS=+12168322276
+#      - TWILIO_SID=${TWILIO_SID}
+#      - TWILIO_TOKEN=${TWILIO_TOKEN}
+#      - TEST_MODE=${not_testing}
+#    volumes:
+#      - ./src/messaging:/root

@@ -18,6 +18,7 @@ headers = {
     'From': 'https://github.com/BKBuddy/whoskickin'
 }
 
+
 def get_single_game_kicking_data(eid):
     """
     This calls the single game feed for the eid provided and builds a dictionary that uses a game's eid as the key. The
@@ -55,12 +56,14 @@ def get_single_game_kicking_data(eid):
     log.info('Data for EID: {} is: {}'.format(eid, single_game_data))
     return single_game_data
 
+
 def get_current_week_eids():
     """
     Retrieves a list of eids from nfl.com that enables you to get live game data from json feed per game.
     :return: [strings of eid]
     """
     return [game.attrib['eid'] for game in _get_games_data_for_current_week()]
+
 
 def get_any_week_eids(season, season_type, week):
     """
@@ -74,6 +77,7 @@ def get_any_week_eids(season, season_type, week):
     """
     url = ANY_WEEK_OF_GAMES.format(season=season, season_type=season_type, week=week)
     return [game.attrib['eid'] for game in _get_games_data_for_current_week(url=url)]
+
 
 def get_current_week_game_data():
     """
@@ -128,6 +132,7 @@ def _get_kickoff_datetime(eid, time):
     game_time = '{} {}:{}PM'.format(eid[:8], hour, minute)
     return datetime.strptime(game_time, '%Y%m%d %I:%M%p')
 
+
 def _get_data_from_nfl(url, eid=None):
     retry_counter = 0
     api_data = None
@@ -145,5 +150,3 @@ def _get_data_from_nfl(url, eid=None):
             log.error('No data returned from url: {}'.format(url))
             return api_data
     return api_data
-
-

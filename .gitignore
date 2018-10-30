@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+test.json
 config.json
 .chalice/
 .chalice/deployments/
