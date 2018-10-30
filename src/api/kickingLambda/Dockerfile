@@ -1,6 +1,8 @@
-FROM python:3.6
+FROM python:3.65
 WORKDIR /root
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 ADD . /root
-CMD ["python", "./main_api.py"]
+#ENTRYPOINT ["/root/bin/chalice"]
+#CMD ["local"]
+

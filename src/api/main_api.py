@@ -1,17 +1,24 @@
 import logging
-from datetime import datetime
+import json
 
-from chalice import Chalice
+from flask import Flask
+from flask_cors import CORS
 
-from chalicelib.kick_service import get_single_game_kicking_data, get_current_week_eids, get_current_week_game_data
+from services.kicking_service import get_single_game_kicking_data, get_current_week_eids, get_current_week_game_data
 
-app = Chalice(app_name='kickingLambda')
-app.debug = True
+app = Flask(__name__)
+CORS(app)
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-@app.route('/all_kicks', methods=['GET'], cors=True)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+
+@app.route('/all_kicks', methods=['GET'])
 def all_kicks():
     """
     This calls the single game feed for all games this week and builds a dictionary of dictionaries that uses a game's
@@ -34,9 +41,11 @@ def all_kicks():
                 }
         """
     eids = get_current_week_eids()
-    return {eid: get_single_game_kicking_data(eid)[eid] for eid in eids}
+    all_kicks_data = {eid: get_single_game_kicking_data(eid)[eid] for eid in eids}
+    return json.dumps(all_kicks_data)
 
-@app.route('/single_game/{eid}', methods=['GET'], cors=True)
+
+@app.route('/single_game/<eid>', methods=['GET'])
 def single_game(eid):
     """
     This calls the single game feed for the eid provided and builds a dictionary that uses a game's eid as the key. The
@@ -53,9 +62,10 @@ def single_game(eid):
                         }
                 }
     """
-    return get_single_game_kicking_data(eid)
+    return json.dumps(get_single_game_kicking_data(eid))
 
-@app.route('/schedule', methods=['GET'], cors=True)
+
+@app.route('/schedule', methods=['GET'])
 def get_current_week_schedule():
     """
         Retrieves metadata about this week's games and returns a dictionary of dictionaries for each game.
@@ -77,4 +87,8 @@ def get_current_week_schedule():
     schedule = get_current_week_game_data()
     for eid, game in schedule.items():
         game['kickoff_datetime'] = game['kickoff_datetime'].strftime('%Y-%m-%d %H:%M:%S')
-    return schedule
+    return json.dumps(schedule)
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000, debug=True)

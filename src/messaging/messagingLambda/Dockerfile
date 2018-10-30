@@ -3,6 +3,6 @@ WORKDIR /root
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 ADD . /root
-ENV TZ=America/New_York
+ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-CMD ["python", "./messaging_scheduler.py"]
+CMD ["chalice local --port 4000"]
