@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+zappa_settings.json
 test.json
 config.json
 .chalice/
@@ -113,3 +114,4 @@ venv.bak/
 .bash_history
 .python_history
 .DS_Store
+src/api/zappa_settings.json
