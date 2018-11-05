@@ -7,7 +7,7 @@ from chalice import Chalice, Cron
 from twilio.rest import Client
 
 from chalicelib.config_service import ACCOUNT_SID, AUTH_TOKEN, BASE_API_URL, RECIPIENT_PHONE_NUMBERS, \
-    TWILIO_PHONE, TEST_MODE, TIME_DELTA
+    TWILIO_PHONE, TEST_MODE, TIME_DELTA, UTC_EASTERN_DIFF
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ MESSAGE_BODY_STARTER = '2nd half kickoffs:'
 
 
 # Automatically runs every Thursday at 7:40 or 8:40 Eastern (UTC for AWS)
-@app.schedule(Cron('45', '23,0,16,17,19,20', '?', '*', 'THU-TUE', '*'))
+@app.schedule(Cron('45', '0,1,17,18,20,21', '?', '*', 'THU-TUE', '*'))
 def send_kickoff_sms_message(event):
     if TEST_MODE:
         message_body = _get_data_from_api(endpoint='schedule')
@@ -52,7 +52,7 @@ def send_sms_message():
 
 def _get_kickoff_message(games_this_week):
     message_body = MESSAGE_BODY_STARTER
-    now = datetime.now() - timedelta(hours=4)
+    now = datetime.now() - timedelta(hours=UTC_EASTERN_DIFF)
     earlier = now - timedelta(hours=TIME_DELTA)
     eids = []
     kickoff_times = []
