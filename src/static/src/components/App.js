@@ -12,10 +12,10 @@ class App extends Component {
     this.state = {};
   }
 
-componentDidMount(){
-  return axios.get('http://localhost:5000/all_kicks')
-    .then(response => this.setState(response.data));
-}
+  async componentDidMount(){
+    const response = await axios.get('http://localhost:5000/all_kicks');
+    return this.setState(response.data);
+  }
 
   render() {
     return (
