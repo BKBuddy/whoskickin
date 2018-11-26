@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../stylesheets/game.css';
 import 'bootstrap';
 
-const LOGO_PATH = '../../public/logos';
+const LOGO_PATH = '../../logos';
 
 export default class Game extends Component {
     render(){
@@ -10,14 +10,14 @@ export default class Game extends Component {
         const receiving_team = kicking_team === away_team ? home_team : away_team
         return (
             <div className='gameContainer'>
-                <div className='border team'>
+                <div className='border kickingTeam'>
                     <img src={`${LOGO_PATH}/${kicking_team}.png`} alt=''></img>
-                    {kicking_team === away_team ? `@ ${kicking_team}` : kicking_team}
+                    {kicking_team === away_team ? `@${kicking_team}` : kicking_team}
                 </div>
                 <div></div>
-                <div className='border team'>
-                    <img src={`${LOGO_PATH}/${this.props.receivingTeam}.png`} alt=''></img>
-                    {receiving_team === away_team ? `@ ${receiving_team}` : receiving_team}
+                <div className='border receivingTeam'>
+                    <img src={`${LOGO_PATH}/${receiving_team}.png`} alt=''></img>
+                    {receiving_team === away_team ? `@${receiving_team}` : receiving_team}
                 </div>
             </div>
         )

@@ -2,12 +2,24 @@
     margin: 1em;
 }
 
-.team {
+.kickingTeam {
     padding: .5em;
 }
 
-img {
-    margin: .25em;
-    width: 2em;
+.receivingTeam {
+    margin-left: 3em;
+    padding: .5em;
+    font-size: .75rem;
+}
+
+.kickingTeam img {
+    margin: .25em 1em .25em .25em;
     height: 2em;
+    width: auto;
+}
+
+.receivingTeam img {
+    margin: .25em 1em .25em .25em;
+    height: 1.25em;
+    width: auto;
 }
