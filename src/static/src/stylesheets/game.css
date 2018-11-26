@@ -5,3 +5,9 @@
 .team {
     padding: .5em;
 }
+
+img {
+    margin: .25em;
+    width: 2em;
+    height: 2em;
+}
