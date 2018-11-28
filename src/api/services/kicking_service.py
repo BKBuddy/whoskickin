@@ -28,8 +28,10 @@ def get_single_game_kicking_data(eid):
     :return: {
                 "eid" :
                         {
-                            "home_team": str
-                            "away_team": str
+                            "home_team_abbr": str
+                            "home_team_name": str
+                            "away_team_abbr": str
+                            "away_team_name": str
                             "kicking_team": str / None
                         }
                 }
@@ -38,8 +40,10 @@ def get_single_game_kicking_data(eid):
     schedule = get_current_week_game_data()
     single_game_data = {
         eid: {
-            'home_team': schedule[eid]['home_team_abbr'],
-            'away_team': schedule[eid]['visitor_team_abbr'],
+            'home_team_abbr': schedule[eid]['home_team_abbr'],
+            'home_team_name': schedule[eid]['home_team_name'],
+            'away_team_abbr': schedule[eid]['visitor_team_abbr'],
+            'away_team_name': schedule[eid]['visitor_team_name'],
             'kicking_team': None
         }
     }

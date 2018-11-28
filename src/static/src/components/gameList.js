@@ -25,8 +25,8 @@ export default class GameList extends Component {
                     </input>
                     {this.state && _.values(this.state.gameData).map((game, i) => {
                         return (<Game key={i}
-                                    home_team={game.home_team}
-                                    away_team={game.away_team}
+                                    home_team={game.home_team_abbr}
+                                    away_team={game.away_team_abbr}
                                     kicking_team={game.kicking_team}>
                                 </Game>);
                     })}
@@ -41,8 +41,8 @@ export default class GameList extends Component {
         }
         let filteredGames = _.pickBy(this.props.gameData, game => {
            const userInput = e.target.value.toLowerCase();
-           const home_team = game.home_team.toLowerCase();
-           const away_team = game.away_team.toLowerCase();
+           const home_team = game.home_team_name.toLowerCase();
+           const away_team = game.away_team_name.toLowerCase();
            if(home_team.includes(userInput) || away_team.includes(userInput)) {
                return game;
            }

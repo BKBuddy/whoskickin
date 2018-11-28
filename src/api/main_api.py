@@ -28,14 +28,18 @@ def all_kicks():
     :return: {
                 "eid" :
                         {
-                            "home_team": str
-                            "away_team": str
+                            "home_team_abbr": str
+                            "home_team_name": str
+                            "away_team_abbr": str
+                            "away_team_name": str
                             "kicking_team": str / None
                         },
                 "eid" :
                         {
-                            "home_team": str
-                            "away_team": str
+                            "home_team_abbr": str
+                            "home_team_name": str
+                            "away_team_abbr": str
+                            "away_team_name": str
                             "kicking_team": str / None
                         }...
                 }
@@ -56,8 +60,10 @@ def single_game(eid):
     :return: {
                 "eid" :
                         {
-                            "home_team": str
-                            "away_team": str
+                            "home_team_abbr": str
+                            "home_team_name": str
+                            "away_team_abbr": str
+                            "away_team_name": str
                             "kicking_team": str / None
                         }
                 }
