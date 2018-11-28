@@ -41,9 +41,9 @@ export default class GameList extends Component {
         }
         let filteredGames = _.pickBy(this.props.gameData, game => {
            const userInput = e.target.value.toLowerCase();
-           const home_team = game.home_team_name.toLowerCase();
-           const away_team = game.away_team_name.toLowerCase();
-           if(home_team.includes(userInput) || away_team.includes(userInput)) {
+           const home_team_searchable_name = game.home_team_searchable_name.toLowerCase();
+           const away_team_searchable_name = game.away_team_searchable_name.toLowerCase();
+           if(home_team_searchable_name.includes(userInput) || away_team_searchable_name.includes(userInput)) {
                return game;
            }
         });

@@ -12,6 +12,40 @@ log = logging.getLogger(__name__)
 ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={season_type}&week={week}'
 CURRENT_WEEK_OF_GAMES = 'http://www.nfl.com/liveupdate/scorestrip/ss.xml'
 GAME_FEED = 'http://www.nfl.com/liveupdate/game-center/{eid}/{eid}_gtd.json'
+ABBR_LOCATION_MAP = {
+  'ARI': 'Arizona',
+  'ATL': 'Atlanta',
+  'BAL': 'Baltimore',
+  'BUF': 'Buffalo',
+  'CAR': 'Carolina',
+  'CHI': 'Chicago',
+  'CIN': 'Cincinnati',
+  'CLE': 'Cleveland',
+  'DAL': 'Dallas',
+  'DEN': 'Denver',
+  'DET': 'Detroit',
+  'GB': 'Green Bay',
+  'HOU': 'Houston',
+  'IND': 'Indianapolis',
+  'JAX': 'Jacksonville',
+  'KC': 'Kansas City',
+  'LAC': 'Los Angeles',
+  'LAR': 'Los Angeles',
+  'MIA': 'Miami',
+  'MIN': 'Minnesota',
+  'NE': 'New England',
+  'NO': 'New Orleans',
+  'NYG': 'New York',
+  'NYJ': 'New York',
+  'OAK': 'Oakland',
+  'PHI': 'Philadelphia',
+  'PIT': 'Pittsburgh',
+  'SEA': 'Seattle',
+  'SF': 'San Fransisco',
+  'TB': 'Tampa Bay',
+  'TEN': 'Tennessee',
+  'WAS': 'Washington',
+}
 
 headers = {
     'User-Agent': 'Whoskickin User Agent 1.0',
@@ -29,9 +63,9 @@ def get_single_game_kicking_data(eid):
                 "eid" :
                         {
                             "home_team_abbr": str
-                            "home_team_name": str
+                            "home_team_searchable_name": str
                             "away_team_abbr": str
-                            "away_team_name": str
+                            "away_team_searchable_name": str
                             "kicking_team": str / None
                         }
                 }
@@ -41,9 +75,9 @@ def get_single_game_kicking_data(eid):
     single_game_data = {
         eid: {
             'home_team_abbr': schedule[eid]['home_team_abbr'],
-            'home_team_name': schedule[eid]['home_team_name'],
+            'home_team_searchable_name': '{} {} {}'.format(schedule[eid]['home_team_abbr'], ABBR_LOCATION_MAP[schedule[eid]['home_team_abbr']], schedule[eid]['home_team_name']),
             'away_team_abbr': schedule[eid]['visitor_team_abbr'],
-            'away_team_name': schedule[eid]['visitor_team_name'],
+            'away_team_searchable_name': '{} {} {}'.format(schedule[eid]['visitor_team_abbr'], ABBR_LOCATION_MAP[schedule[eid]['visitor_team_abbr']], schedule[eid]['visitor_team_name']),
             'kicking_team': None
         }
     }
