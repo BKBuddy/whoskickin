@@ -16,13 +16,26 @@ export default class GameList extends Component {
 
     render(){
         return (
-            <div>
+            <div style={{'width':'100%'}}>
+                <div className='slideOut container' onClick={this.handleClick}>
+                    <div className='textAlignCenter row justify-content-center'>
+                        <strong className='slideout-title col-12'>WHO'S KICKING?</strong>
+                        <i className='slideout-text col-9'>find out which teams will be kicking off in the second half...</i>
+                        <span className="fas fa-angle-up fa-lg col-12 caret"></span>
+                    </div>
+                </div>
+                <div className='container weekNumber'>
+                    <div className='row justify-content-center'>
+                        <strong className='col-12'>WEEK 15</strong>
+                    </div>
+                </div>
                 <div className='searchBox'>
                     <input 
                         type='text'
                         placeholder='search teams...'
                         onChange={e => this.handleChange(e)}>
                     </input>
+                </div>
                     {this.state && _.values(this.state.gameData).map((game, i) => {
                         return (<Game key={i}
                                     home_team={game.home_team_abbr}
@@ -30,7 +43,6 @@ export default class GameList extends Component {
                                     kicking_team={game.kicking_team}>
                                 </Game>);
                     })}
-                </div>
             </div>
         )
     }
@@ -48,6 +60,13 @@ export default class GameList extends Component {
            }
         });
         this.setState({gameData: filteredGames});
+    }
+
+    handleClick(e){
+        let slideOutPanel = e.currentTarget;
+        if (slideOutPanel) {
+            slideOutPanel.classList.add('slideIn');
+        }
     }
 
     

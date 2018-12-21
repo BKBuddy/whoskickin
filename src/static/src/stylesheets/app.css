@@ -1,8 +1,48 @@
+.caret {
+    color: #FFF;
+}
+
 .searchBox {
     padding: 1em 1em 0 1em;
     margin: 0;
 }
 
+.slideIn {
+    display: none;
+}
+
+.slideOut {
+    padding: 1em .5em;
+    background-color: #464646;
+}
+
+.slideout-title {
+    font-size: .85em;
+}
+
+.slideout-text {
+    padding: .5em 0;
+    font-size: 14pt;
+}
+
+.textAlignCenter {
+    text-align: center;
+}
+
+.weekNumber {
+    text-align: center;
+    color: #FFF;
+    background-color: #0076B6;
+    padding: .75em 0;
+    width: 100%;
+}
+
 input {
     width: 100%;
 }
+
+strong, i {
+    color: #FFF;
+    margin: 0;
+}
+

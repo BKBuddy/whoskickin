@@ -1,0 +1,138 @@
+.ARI {
+    background-color: #97233F;
+
+}
+
+.ATL {
+    background-color: #A71930;
+}
+
+.BAL {
+    background-color: #241773;
+}
+
+.BUF {
+    background-color: #00338D;
+}
+
+.CAR {
+    background-color: #0085CA;
+}
+
+.CHI {
+    background-color: #0B162A;
+}
+
+.CIN {
+    background-color: #FB4F14;
+}
+
+.CLE {
+    background-color: #FF3C00;
+}
+
+.DAL {
+    background-color: #041E42;
+}
+
+.DEN {
+    background-color: #FB4F14;
+}
+
+.DET {
+    background-color: #0076B6;
+}
+
+.GB {
+    background-color: #203731;
+}
+
+.HOU {
+    background-color: #03202F;
+}
+
+.IND {
+    background-color: #002C5F;
+}
+
+.JAX {
+    background-color: #006778;
+}
+
+.KC {
+    background-color: #E31837;
+}
+
+.LAC {
+    background-color: #0080C6;
+}
+
+.LA {
+    background-color: #866D4B;
+}
+
+.MIA {
+    background-color: #008E97;
+}
+
+.MIN {
+    background-color: #4F2683;
+}
+
+.NE {
+    background-color: #002244;
+}
+
+.NO {
+    background-color: #D3BC8D;
+}
+
+.NYG {
+    background-color: #0B2265;
+}
+
+.NYJ {
+    background-color: #003F2D;
+}
+
+.OAK {
+    background-color: #A5ACAF;
+}
+
+.PHI {
+    background-color: #004C54;
+}
+
+.PIT {
+    background-color: #FFB612;
+}
+
+.SF {
+    background-color: #AA0000;
+}
+
+.SEA {
+    background-color: #69BE28;
+}
+
+.TB {
+    background-color: #D50A0A;
+}
+
+.TEN {
+    background-color: #002A5C;
+}
+
+.WAS {
+    background-color: #773141;
+}
+
+.teamColor {
+    width: 1em;
+}
+
+.grey-bg {
+    background-color: #808080;
+    width:85%;
+    margin:0;
+}

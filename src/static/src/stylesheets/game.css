@@ -1,27 +1,11 @@
 .gameContainer {
     margin: 1em;
+    width: 100%;
 }
 
-.kickingTeam {
-    padding: .5em;
-    background-color: #EEE;
-}
-
-.receivingTeam {
-    margin-left: 3em;
-    padding: .5em;
-    font-size: .75rem;
-    background-color: #EEE;
-}
-
-.kickingTeam img {
-    margin: .25em 1em .25em .25em;
-    height: 1.75em;
-    width: auto;
-}
-
-.receivingTeam img {
-    margin: .25em 1em .25em .25em;
-    height: 1.25em;
-    width: auto;
+.teamName {
+    padding-left: 1em;
+    margin-bottom: .2em;
+    color: #FFF;
+    font-weight: bold;
 }
