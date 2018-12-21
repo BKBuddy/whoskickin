@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import ParseError
 import logging
 from datetime import datetime
 
@@ -9,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 
-ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season={season}&seasonType={season_type}&week={week}'
+ANY_WEEK_OF_GAMES = 'http://www.nfl.com/ajax/scorestrip?season=2018&seasonType=REG&week=1'
 CURRENT_WEEK_OF_GAMES = 'http://www.nfl.com/liveupdate/scorestrip/ss.xml'
 GAME_FEED = 'http://www.nfl.com/liveupdate/game-center/{eid}/{eid}_gtd.json'
 ABBR_LOCATION_MAP = {
@@ -30,7 +31,7 @@ ABBR_LOCATION_MAP = {
   'JAX': 'Jacksonville',
   'KC': 'Kansas City',
   'LAC': 'Los Angeles',
-  'LAR': 'Los Angeles',
+  'LA': 'Los Angeles',
   'MIA': 'Miami',
   'MIN': 'Minnesota',
   'NE': 'New England',
@@ -160,7 +161,17 @@ def _get_games_data_for_current_week(url=None):
         except requests.exceptions.Timeout as ex:
             retry_counter += 1
             log.error('Error encountered reaching {}: {}'.format(url, ex))
-    return ET.fromstring(games_this_week.text)[0]
+    return _get_eids_for_week(games_this_week)
+
+
+def _get_eids_for_week(games_this_week):
+    try:
+        eids_for_this_week = ET.fromstring(games_this_week.text)[0]
+    except ParseError as ex:
+        log.error("This week's game schedule is not published, defaulting to week one: {}".format(ex))
+        games_this_week = requests.get(url=ANY_WEEK_OF_GAMES, timeout=3, headers=headers)
+        eids_for_this_week = ET.fromstring(games_this_week.text)[0]
+    return eids_for_this_week
 
 
 def _get_kickoff_datetime(eid, time):
