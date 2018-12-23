@@ -21,12 +21,12 @@ export default class GameList extends Component {
                     <div className='textAlignCenter row justify-content-center'>
                         <strong className='slideout-title col-12'>WHO'S KICKING?</strong>
                         <i className='slideout-text col-9'>find out which teams will be kicking off in the second half...</i>
-                        <span className="fas fa-angle-up fa-lg col-12 caret"></span>
+                        <span className="fas fa-times fa-lg col-12 close"></span>
                     </div>
                 </div>
                 <div className='container weekNumber'>
                     <div className='row justify-content-center'>
-                        <strong className='col-12'>WEEK 15</strong>
+                        <strong className='col-12'>WEEK 16</strong>
                     </div>
                 </div>
                 <div className='searchBox'>
